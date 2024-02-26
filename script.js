@@ -1,70 +1,84 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const films = []; // Assume this array is filled with 240 film objects
-    const cardsPerPage = 20; // Number of cards to display per page
+document.addEventListener('DOMContentLoaded', () => {
+    const showsPerPage = 15;
+    let allShows = [];
     let currentPage = 1;
 
-    // Example film object structure
-    for (let i = 1; i <= 240; i++) {
-        films.push({ title: `Film ${i}`, image: 'movie-placeholder.jpg', description: `Description for Film ${i}` });
+    document.getElementById('searchButton').addEventListener('click', () => {
+        const searchQuery = document.getElementById('searchInput').value.trim().toLowerCase();
+        fetchShows(searchQuery);
+    });
+
+    document.querySelectorAll('.navbar-brand, .home').forEach(element => {
+        element.addEventListener('click', (event) => {
+            event.preventDefault();
+            document.getElementById('searchInput').value = '';
+            fetchShows();
+        });
+    });
+
+    async function fetchShows(searchQuery = '') {
+        const url = 'https://api.tvmaze.com/shows';
+        try {
+            const response = await fetch(url);
+            let data = await response.json();
+            console.log("-----",data);
+            if (searchQuery) {
+                data = data.filter(show => show.name.toLowerCase().includes(searchQuery));
+            }
+            allShows = data;
+            displayShows(1); // Always start from the first page
+        } catch (error) {
+            console.error('Error:', error);
+        }
     }
 
-    function displayFilms(page) {
-        const startIndex = (page - 1) * cardsPerPage;
-        const endIndex = startIndex + cardsPerPage;
-        const filmsToDisplay = films.slice(startIndex, endIndex);
+    function displayShows(page) {
+        const startIndex = (page - 1) * showsPerPage;
+        const endIndex = startIndex + showsPerPage;
+        const showsToDisplay = allShows.slice(startIndex, endIndex);
 
         const container = document.getElementById('cardsContainer');
-        container.innerHTML = ''; // Clear the container
-
-        let rowHtml = '<div class="row">'; // Start a new row
-        filmsToDisplay.forEach((film, index) => {
+        container.innerHTML = '';
+        showsToDisplay.forEach(show => {
             const cardHtml = `
-                <div class="col-md-3 mb-4">
-                    <div class="card" style="width: 100%;">
-                        <img src="${film.image}" class="card-img-top" alt="${film.title}">
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <img src="${show.image ? show.image.medium : 'https://placekitten.com/g/200/300'}" class="card-img-top" alt="${show.name}">
                         <div class="card-body">
-                            <h5 class="card-title">${film.title}</h5>
-                            <p class="card-text">${film.description}</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                            <h5 class="card-title">${show.name}</h5>
+                            <p class="card-text">Rating: ${show.rating.average || 'N/A'}</p>
+                            <p class="card-text">Genres: ${show.genres.join(', ') || 'N/A'}</p>
+                            <p class="card-text">Language: ${show.language || 'N/A'}</p>
+                            <a href="details.html?id=${show.id}" class="btn btn-primary">Details</a>
+                            ${show.officialSite ? `<a href="${show.officialSite}" target="_blank" class="btn btn-secondary">Go to Website</a>` : ''}
                         </div>
                     </div>
                 </div>
             `;
-
-            rowHtml += cardHtml;
-
-            // After every 4th card, end the current row and start a new one
-            if ((index + 1) % 4 === 0 && index !== 0) {
-                rowHtml += '</div><div class="row">'; // Close the current row and start a new one
-            }
+            container.innerHTML += cardHtml;
         });
-        rowHtml += '</div>'; // Close the last row
-        container.innerHTML = rowHtml;
 
-        // Update pagination
-        updatePagination(page, Math.ceil(films.length / cardsPerPage));
+        setupPagination(allShows.length, page);
     }
 
-    function updatePagination(currentPage, totalPages) {
-        const pagination = document.getElementById('pagination');
-        pagination.innerHTML = ''; // Clear existing pagination buttons
+    function setupPagination(totalShows, currentPage) {
+        const totalPages = Math.ceil(totalShows / showsPerPage);
+        const paginationContainer = document.getElementById('paginationContainer');
+        paginationContainer.innerHTML = '';
 
         for (let i = 1; i <= totalPages; i++) {
-            const pageItem = document.createElement('li');
-            pageItem.classList.add('page-item');
-            if (i === currentPage) {
-                pageItem.classList.add('active');
-            }
-            const pageLink = document.createElement('a');
-            pageLink.classList.add('page-link');
-            pageLink.href = '#';
-            pageLink.innerText = i;
-            pageLink.addEventListener('click', () => displayFilms(i));
-
-            pageItem.appendChild(pageLink);
-            pagination.appendChild(pageItem);
+            const pageItem = `<li class="page-item ${i === currentPage ? 'active' : ''}"><a class="page-link" href="#">${i}</a></li>`;
+            paginationContainer.innerHTML += pageItem;
         }
+
+        document.querySelectorAll('#paginationContainer .page-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                currentPage = parseInt(this.textContent);
+                displayShows(currentPage);
+            });
+        });
     }
 
-    displayFilms(currentPage); // Initial display
+    fetchShows(); // Initial fetch of shows
 });

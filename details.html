@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Film Details</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f0f2f5;
+            padding-top: 80px; /* Adjusted for fixed navbar */
+        }
+        .navbar {
+            background-color: #343a40; /* Dark shade for contrast */
+        }
+        .card {
+            margin-top: 20px;
+            border-radius: 15px; /* Rounded corners for the card */
+            overflow: hidden; /* Ensures the image corners are also rounded */
+            border: none; /* Removes card border */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow */
+        }
+        .card-img-top {
+            height: 250px; /* Adjusted height */
+            object-fit: cover; /* Keeps aspect ratio, covers the card */
+            object-position: center; /* Centers the image */
+        }
+        .badge-secondary {
+            background-color: #6c757d;
+            margin-right: 5px;
+        }
+        .card-title {
+            color: #007bff; /* Theme color for titles */
+        }
+        .card-text {
+            color: #495057; /* Slightly dark gray for text for better readability */
+        }
+        .container {
+            padding-bottom: 20px; /* Adds spacing at the bottom */
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">Cinema</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-item nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-item nav-link" href="#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-item nav-link" href="#contact">Contact</a>
+                    </li>
+                </ul>
+                <form class="form-inline">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search Shows" aria-label="Search" id="searchInput">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="button" id="searchButton">Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<div class="container">
+    <div id="filmDetailsContainer"></div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const params = new URLSearchParams(window.location.search);
+    const filmId = params.get('id');
+    fetchFilmDetails(filmId);
+
+    document.getElementById('searchButton').addEventListener('click', function() {
+        const searchQuery = document.getElementById('searchInput').value.trim();
+        if (searchQuery !== '') {
+            window.location.href = `index.html?search=${encodeURIComponent(searchQuery)}`;
+        }
+    });
+});
+
+function fetchFilmDetails(filmId) {
+    if (!filmId) return;
+    fetch(`https://api.tvmaze.com/shows/${filmId}`)
+        .then(response => response.json())
+        .then(show => {
+            const genres = show.genres.map(genre => `<span class="badge badge-secondary">${genre}</span>`).join('');
+            const filmDetails = `
+                <div class="card">
+                    <img src="${show.image ? show.image.original : 'https://placekitten.com/g/200/300'}" class="card-img-top" alt="${show.name}">
+                    <div class="card-body">
+                        <h5 class="card-title">${show.name}</h5>
+                        <p class="card-text"><strong>Genres:</strong> ${genres}</p>
+                        <p class="card-text"><strong>Rating:</strong> ${show.rating.average || 'N/A'}</p>
+                        <p class="card-text"><strong>Premiered:</strong> ${show.premiered || 'N/A'}</p>
+                        <p class="card-text"><strong>Runtime:</strong> ${show.runtime ? show.runtime + ' minutes' : 'N/A'}</p>
+                        <p class="card-text"><strong>Language:</strong> ${show.language || 'N/A'}</p>
+                        <p class="card-text">${show.summary || ''}</p>
+                    </div>
+                </div>
+            `;
+            document.getElementById('filmDetailsContainer').innerHTML = filmDetails;
+        })
+        .catch(error => console.error('Error:', error));
+}
+</script>
+</body>
+</html>

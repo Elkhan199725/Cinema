@@ -1,0 +1,36 @@
+#head{
+ display: wrap;
+}
+
+body {
+    background-color: #f0f2f5;
+    padding-top: 80px; /* Adjusted for fixed navbar */
+}
+.navbar {
+    background-color: #343a40; /* Dark shade for contrast */
+}
+.card {
+    margin-top: 20px;
+    border-radius: 15px; /* Rounded corners for the card */
+    overflow: hidden; /* Ensures the image corners are also rounded */
+    border: none; /* Removes card border */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow */
+}
+.card-img-top {
+    height: 250px; /* Adjusted height */
+    object-fit: cover; /* Keeps aspect ratio, covers the card */
+    object-position: center; /* Centers the image */
+}
+.badge-secondary {
+    background-color: #6c757d;
+    margin-right: 5px;
+}
+.card-title {
+    color: #007bff; /* Theme color for titles */
+}
+.card-text {
+    color: #495057; /* Slightly dark gray for text for better readability */
+}
+.container {
+    padding-bottom: 20px; /* Adds spacing at the bottom */
+}
