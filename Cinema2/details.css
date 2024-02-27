@@ -1,0 +1,72 @@
+/* details.css */
+body {
+    background-color: #f0f2f5;
+    font-family: Arial, sans-serif;
+    padding-top: auto; /* Adjust as needed for fixed navbar */
+}
+
+#filmDetailsContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.card-img-left {
+    width: auto; /* Adjust width as needed */
+    max-height: 600px; /* Adjust height as needed */
+    object-fit: cover;
+    margin-right: 20px;
+}
+
+.card-body {
+    flex: 1;
+    padding: 20px;
+}
+
+.card-title {
+    color: #007bff;
+}
+
+.card-text {
+    color: #495057;
+}
+
+a.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+}
+
+a.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+/* Hover effect for the image */
+.card-img-left:hover {
+    transform: scale(1.03);
+    transition: transform 0.3s ease;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+    #filmDetailsContainer {
+        flex-direction: column;
+    }
+
+    .card-img-left {
+        max-height: none;
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
+
+    .card-body {
+        flex: none;
+    }
+}

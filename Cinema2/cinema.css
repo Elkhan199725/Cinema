@@ -1,0 +1,49 @@
+/* cinema.css */
+
+body {
+    background-color: #f8f9fa; /* Light gray background for contrast */
+}
+
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow for the navbar */
+}
+
+.card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth transitions for hover effects */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Initial subtle shadow */
+}
+
+.card:hover {
+    transform: translateY(-5px); /* Lift card up slightly on hover */
+    box-shadow: 0 10px 15px rgba(0,0,0,0.2); /* Increase shadow for lifted effect */
+}
+
+.container {
+    padding-top: 20px; /* Add some spacing at the top */
+}
+
+.pagination {
+    margin-top: 20px; /* Add some spacing above the pagination */
+}
+
+#cardsContainer .row {
+    margin-top: 20px; /* Spacing between rows of cards */
+}
+
+.form-control {
+    transition: border-color 0.2s ease; /* Smooth transition for the search input */
+}
+
+.form-control:focus {
+    border-color: #007bff; /* Highlight color when focused */
+    box-shadow: none; /* Remove default Bootstrap shadow to keep it clean */
+}
+
+.btn-outline-success {
+    transition: background-color 0.2s ease, color 0.2s ease; /* Smooth transition for the search button */
+}
+
+.btn-outline-success:hover {
+    background-color: #007bff; /* Change background on hover */
+    color: white; /* Ensure text color is readable on new background */
+}
